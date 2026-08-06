@@ -26,7 +26,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         grid1.clear();
 
         for (x, cpu) in sys.cpus().iter().enumerate() {
-            let cpu_usage = (cpu.cpu_usage() as f64 / (100. / 34.)).round() as usize;
+            let cpu_usage = (cpu.cpu_usage() as f64 / (100. / led::HEIGHT as f64)).round() as usize;
             for y in 0..cpu_usage {
                 if x < led::WIDTH - 1 {
                     grid0.set_xy(x, y, true);
@@ -36,8 +36,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
 
-        let ram_usage =
-            ((sys.used_memory() as f64 / sys.total_memory() as f64) * 34.).round() as usize;
+        let ram_usage = ((sys.used_memory() as f64 / sys.total_memory() as f64)
+            * led::HEIGHT as f64)
+            .round() as usize;
         for y in 0..ram_usage {
             grid1.set_xy(led::WIDTH - 1, y, true);
         }
