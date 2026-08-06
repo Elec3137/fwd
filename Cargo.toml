@@ -1,5 +1,7 @@
 [package]
 name = "fwd"
+description = "framework daemon, to turn the laptop's leds into a system monitor"
+homepage = "https://github.com/Elec3137/fwd"
 license = "AGPL-3.0-or-later"
 version = "0.1.0"
 edition = "2024"
