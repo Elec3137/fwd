@@ -18,7 +18,11 @@
 
         crate = pkgs.rustPlatform.buildRustPackage {
           inherit name;
-          src = ./.;
+          src = lib.sources.sourceFilesBySuffices ./. [
+            "Cargo.toml"
+            "Cargo.lock"
+            ".rs"
+          ];
           cargoLock.lockFile = ./Cargo.lock;
 
           nativeBuildInputs = with pkgs; [
