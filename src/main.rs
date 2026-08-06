@@ -1,4 +1,4 @@
-use std::{thread, time::Duration};
+use std::{io, thread, time::Duration};
 
 use sysinfo::{CpuRefreshKind, MemoryRefreshKind, RefreshKind};
 
@@ -44,10 +44,24 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
 
         if let Err(e) = grid0.write(&mut strip0) {
-            eprintln!("failed to write grid0: {e}")
+            match e.kind() {
+                io::ErrorKind::BrokenPipe => {
+                    if let Err(e) = led::strip0().map(|strip| strip0 = strip) {
+                        eprintln!("failed to re-open strip: {e}")
+                    }
+                }
+                _ => eprintln!("unhandled write error: {e}"),
+            }
         }
         if let Err(e) = grid1.write(&mut strip1) {
-            eprintln!("failed to write grid1: {e}")
+            match e.kind() {
+                io::ErrorKind::BrokenPipe => {
+                    if let Err(e) = led::strip1().map(|strip| strip1 = strip) {
+                        eprintln!("failed to re-open strip: {e}")
+                    }
+                }
+                _ => eprintln!("unhandled write error: {e}"),
+            }
         }
         thread::sleep(Duration::from_millis(100));
     }
