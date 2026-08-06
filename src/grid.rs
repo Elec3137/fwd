@@ -31,7 +31,7 @@ impl Grid {
     }
 
     pub fn clear(&mut self) {
-        self.data[led::COMMAND_LEN..Self::LEN].copy_from_slice(&[0; Self::LEN - led::COMMAND_LEN]);
+        self.data[led::COMMAND_LEN..].copy_from_slice(&[0; Self::LEN - led::COMMAND_LEN]);
     }
 
     pub fn write<W: Write>(&self, w: &mut W) -> Result<(), impl std::error::Error + use<W>> {
