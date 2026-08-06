@@ -17,7 +17,16 @@
 
         crate = pkgs.rustPlatform.buildRustPackage {
           inherit name;
+          src = ./.;
           cargoLock.lockFile = ./Cargo.lock;
+
+          nativeBuildInputs = with pkgs; [
+            pkg-config
+          ];
+
+          buildInputs = with pkgs; [
+            systemd
+          ];
         };
       in
       {
