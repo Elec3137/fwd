@@ -11,6 +11,7 @@
       system:
       let
         pkgs = import inputs.nixpkgs { inherit system; };
+        lib = pkgs.lib;
 
         cargoToml = fromTOML (builtins.readFile ./Cargo.toml);
         name = cargoToml.package.name;
@@ -27,10 +28,22 @@
           buildInputs = with pkgs; [
             systemd
           ];
+
+          meta.mainProgram = name;
         };
       in
       {
         packages.default = crate;
+
+        nixosModules.default = {
+          systemd.services."fwd-autostart" = {
+            enable = true;
+            serviceConfig = {
+              ExecStart = lib.getExe crate;
+            };
+            wantedBy = [ "multi-user.target" ];
+          };
+        };
 
         devShells.default = pkgs.mkShell {
           inputsFrom = [ crate ];
