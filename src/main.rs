@@ -42,8 +42,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             grid1.set_xy(led::WIDTH - 1, y, true);
         }
 
-        grid0.write(&mut strip0)?;
-        grid1.write(&mut strip1)?;
+        if let Err(e) = grid0.write(&mut strip0) {
+            eprintln!("failed to write grid0: {e}")
+        }
+        if let Err(e) = grid1.write(&mut strip1) {
+            eprintln!("failed to write grid1: {e}")
+        }
         thread::sleep(Duration::from_millis(100));
     }
 
