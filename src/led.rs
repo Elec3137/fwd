@@ -9,20 +9,21 @@ pub const COMMAND_LEN: usize = 3;
 pub const WIDTH: usize = 9;
 pub const HEIGHT: usize = 34;
 
+const MAX_BRIGHTNESS: &[u8] = &[50, 172, 0, 255];
+const CLEAR: &[u8] = &[50, 172, 8];
+
 pub fn init() -> serialport::Result<()> {
     let mut strip0 = strip0()?;
     let mut strip1 = strip1()?;
 
-    // Set brightness
-    strip0.write_all(&[50, 172, 0, 255])?;
-    strip1.write_all(&[50, 172, 0, 255])?;
+    strip0.write_all(MAX_BRIGHTNESS)?;
+    strip1.write_all(MAX_BRIGHTNESS)?;
 
     // Sleep to prevent errors
     thread::sleep(Duration::from_secs(1));
 
-    // Clear the LEDs
-    strip0.write_all(&[50, 172, 8])?;
-    strip1.write_all(&[50, 172, 8])?;
+    strip0.write_all(CLEAR)?;
+    strip1.write_all(CLEAR)?;
 
     Ok(())
 }
