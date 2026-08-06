@@ -28,10 +28,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         for (x, cpu) in sys.cpus().iter().enumerate() {
             let cpu_usage = (cpu.cpu_usage() as f64 / (100. / led::HEIGHT as f64)).round() as usize;
             for y in 0..cpu_usage {
-                if x < led::WIDTH - 1 {
+                if x < led::WIDTH {
                     grid0.set_xy(x, y, true);
                 } else {
-                    grid1.set_xy(x - led::WIDTH + 1, y, true);
+                    grid1.set_xy(x - led::WIDTH, y, true);
                 }
             }
         }
