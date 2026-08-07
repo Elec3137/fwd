@@ -1,4 +1,4 @@
-use std::{io, thread, time::Duration};
+use std::{io, thread};
 
 use sysinfo::{CpuRefreshKind, MemoryRefreshKind, RefreshKind};
 
@@ -60,7 +60,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 _ => eprintln!("unhandled write error: {e}"),
             }
         }
-        thread::sleep(Duration::from_millis(100));
+        thread::sleep(led::MIN_INTERVAL);
     }
 
     // Ok(())
