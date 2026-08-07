@@ -6,8 +6,6 @@ mod grid;
 mod led;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    led::init()?;
-
     let mut sys = sysinfo::System::new();
 
     let mut grid0 = grid::Grid::default();
