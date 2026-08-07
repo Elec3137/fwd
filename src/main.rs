@@ -1,4 +1,4 @@
-use std::{io, thread};
+use std::{io, thread, time::Duration};
 
 use sysinfo::{CpuRefreshKind, MemoryRefreshKind, RefreshKind};
 
@@ -12,7 +12,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut grid1 = grid::Grid::default();
 
     let (mut strip0, mut strip1) = led::get_strip_pair()?;
-
+    thread::sleep(led::MIN_INTERVAL);
     loop {
         sys.refresh_specifics(
             RefreshKind::nothing()
@@ -44,7 +44,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             match e.kind() {
                 io::ErrorKind::BrokenPipe => match led::get_strip_pair() {
                     Ok(pair) => (strip0, strip1) = pair,
-                    Err(e) => eprintln!("failed to reconnect strips: {e}"),
+                    Err(e) => {
+                        eprintln!("failed to reconnect strips: {e}");
+                        thread::sleep(Duration::from_secs(1));
+                    }
                 },
                 _ => eprintln!("unhandled write error: {e}"),
             }
@@ -53,7 +56,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             match e.kind() {
                 io::ErrorKind::BrokenPipe => match led::get_strip_pair() {
                     Ok(pair) => (strip0, strip1) = pair,
-                    Err(e) => eprintln!("failed to reconnect strips: {e}"),
+                    Err(e) => {
+                        eprintln!("failed to reconnect strips: {e}");
+                        thread::sleep(Duration::from_secs(1));
+                    }
                 },
                 _ => eprintln!("unhandled write error: {e}"),
             }
