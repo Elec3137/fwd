@@ -22,6 +22,9 @@ const MAX_BRIGHTNESS: &[u8] = &[50, 172, 0, 255];
 /// and with that information decided 60fps is likely what it's made for.
 pub const MIN_INTERVAL: Duration = Duration::from_nanos(16_666_666);
 
+/// helper function for a two-strip setup
+///
+/// see the documentation of `get_strips` for more information
 pub fn get_strip_pair() -> serialport::Result<(Box<dyn SerialPort>, Box<dyn SerialPort>)> {
     let mut strips = get_strips()?;
     Ok((
@@ -38,7 +41,9 @@ pub fn get_strip_pair() -> serialport::Result<(Box<dyn SerialPort>, Box<dyn Seri
 
 /// returns an iterator over any recognized LED strips
 ///
-/// when elements are consumed, the strips are opened and set to max brightness
+/// when elements are consumed, the strips are opened and set to max brightness,
+/// so make sure to sleep for the `MIN_INTERVAL` to avoid errors.
+/// (if you're writing to the strip(s) immediately afterwards)
 pub fn get_strips()
 -> serialport::Result<impl Iterator<Item = serialport::Result<Box<dyn SerialPort>>>> {
     Ok(serialport::available_ports()?
