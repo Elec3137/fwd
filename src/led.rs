@@ -1,6 +1,6 @@
 use std::{thread, time::Duration};
 
-use serialport::SerialPort;
+use serialport::{SerialPort, SerialPortType, UsbPortInfo};
 
 /// https://github.com/FrameworkComputer/inputmodule-rs/blob/main/commands.md
 pub const COMMAND_BYTES: [u8; COMMAND_LEN] = [50, 172, 6];
@@ -13,8 +13,7 @@ const MAX_BRIGHTNESS: &[u8] = &[50, 172, 0, 255];
 const CLEAR: &[u8] = &[50, 172, 8];
 
 pub fn init() -> serialport::Result<()> {
-    let mut strip0 = strip0()?;
-    let mut strip1 = strip1()?;
+    let (mut strip0, mut strip1) = get_strip_pair()?;
 
     strip0.write_all(MAX_BRIGHTNESS)?;
     strip1.write_all(MAX_BRIGHTNESS)?;
@@ -28,9 +27,32 @@ pub fn init() -> serialport::Result<()> {
     Ok(())
 }
 
-pub fn strip0() -> serialport::Result<Box<dyn SerialPort>> {
-    serialport::new("/dev/ttyACM0", 115200).open()
+pub fn get_strip_pair() -> serialport::Result<(Box<dyn SerialPort>, Box<dyn SerialPort>)> {
+    let mut strips = get_strips()?;
+    Ok((
+        strips.next().ok_or(serialport::Error::new(
+            serialport::ErrorKind::NoDevice,
+            "missing 'LED Matrix Input Module'",
+        ))??,
+        strips.next().ok_or(serialport::Error::new(
+            serialport::ErrorKind::NoDevice,
+            "missing 'LED Matrix Input Module'",
+        ))??,
+    ))
 }
-pub fn strip1() -> serialport::Result<Box<dyn SerialPort>> {
-    serialport::new("/dev/ttyACM1", 115200).open()
+
+pub fn get_strips()
+-> serialport::Result<impl Iterator<Item = serialport::Result<Box<dyn SerialPort>>>> {
+    Ok(serialport::available_ports()?
+        .into_iter()
+        .filter(|info| {
+            matches!(
+                &info.port_type,
+                SerialPortType::UsbPort(UsbPortInfo {
+                    product: Some(product),
+                    ..
+                }) if product == "LED Matrix Input Module"
+            )
+        })
+        .map(|info| serialport::new(&info.port_name, 115200).open()))
 }

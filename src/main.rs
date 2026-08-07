@@ -13,8 +13,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut grid0 = grid::Grid::default();
     let mut grid1 = grid::Grid::default();
 
-    let mut strip0 = led::strip0()?;
-    let mut strip1 = led::strip1()?;
+    let (mut strip0, mut strip1) = led::get_strip_pair()?;
 
     loop {
         sys.refresh_specifics(
@@ -45,21 +44,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         if let Err(e) = grid0.write(&mut strip0) {
             match e.kind() {
-                io::ErrorKind::BrokenPipe => {
-                    if let Err(e) = led::strip0().map(|strip| strip0 = strip) {
-                        eprintln!("failed to re-open strip: {e}")
-                    }
-                }
+                io::ErrorKind::BrokenPipe => match led::get_strip_pair() {
+                    Ok(pair) => (strip0, strip1) = pair,
+                    Err(e) => eprintln!("failed to reconnect strips: {e}"),
+                },
                 _ => eprintln!("unhandled write error: {e}"),
             }
         }
         if let Err(e) = grid1.write(&mut strip1) {
             match e.kind() {
-                io::ErrorKind::BrokenPipe => {
-                    if let Err(e) = led::strip1().map(|strip| strip1 = strip) {
-                        eprintln!("failed to re-open strip: {e}")
-                    }
-                }
+                io::ErrorKind::BrokenPipe => match led::get_strip_pair() {
+                    Ok(pair) => (strip0, strip1) = pair,
+                    Err(e) => eprintln!("failed to reconnect strips: {e}"),
+                },
                 _ => eprintln!("unhandled write error: {e}"),
             }
         }
