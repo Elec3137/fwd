@@ -49,7 +49,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         thread::sleep(Duration::from_secs(1));
                     }
                 },
-                _ => eprintln!("unhandled write error: {e}"),
+                _ => {
+                    eprintln!("unhandled write error: {e}");
+                    thread::sleep(Duration::from_secs(1));
+                }
             }
         }
         if let Err(e) = grid1.write(&mut strip1) {
@@ -61,7 +64,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         thread::sleep(Duration::from_secs(1));
                     }
                 },
-                _ => eprintln!("unhandled write error: {e}"),
+                _ => {
+                    eprintln!("unhandled write error: {e}");
+                    thread::sleep(Duration::from_secs(1));
+                }
             }
         }
         thread::sleep(led::MIN_INTERVAL);
