@@ -20,7 +20,7 @@ const MAX_BRIGHTNESS: &[u8] = &[50, 172, 0, 255];
 /// note that the nanosecond precision is a guess;
 /// we found errors at 16ms and no errors at 17ms,
 /// and with that information decided 60fps is likely what it's made for.
-pub const MIN_INTERVAL: Duration = Duration::from_nanos(16_666_666);
+pub const MIN_INTERVAL: Duration = Duration::from_nanos(17_000_000);
 
 /// helper function for a two-strip setup
 ///
