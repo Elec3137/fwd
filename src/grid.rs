@@ -1,4 +1,4 @@
-use std::io::{self, Write};
+use std::io;
 
 use bitvec::{order::Lsb0, view::BitView};
 
@@ -34,7 +34,7 @@ impl Grid {
         self.data[led::COMMAND_LEN..].copy_from_slice(&[0; Self::LEN - led::COMMAND_LEN]);
     }
 
-    pub fn write<W: Write>(&self, w: &mut W) -> io::Result<()> {
+    pub fn write<W: io::Write>(&self, w: &mut W) -> io::Result<()> {
         w.write_all(&self.data)
     }
 }
