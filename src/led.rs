@@ -17,10 +17,10 @@ const MAX_BRIGHTNESS: &[u8] = &[50, 172, 0, 255];
 /// determined experimentally, any shorter than this (accounting for overhead)
 /// would cause "Operation timed out" errors upon writing.
 ///
-/// note that the nanosecond precision is a guess;
 /// we found errors at 16ms and no errors at 17ms,
 /// and with that information decided 60fps is likely what it's made for.
-pub const MIN_INTERVAL: Duration = Duration::from_nanos(17_000_000);
+/// then when it started to time out anyway, we settled on just 17ms
+pub const MIN_INTERVAL: Duration = Duration::from_millis(17);
 
 /// helper function for a two-strip setup
 ///
