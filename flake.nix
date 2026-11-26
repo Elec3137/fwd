@@ -23,7 +23,7 @@
         {
           rustPlatform,
           pkg-config,
-          systemd,
+          udev,
         }:
         rustPlatform.buildRustPackage {
           inherit name src;
@@ -32,7 +32,7 @@
             pkg-config
           ];
           buildInputs = [
-            systemd
+            udev
           ];
 
           meta.mainProgram = name;
@@ -46,6 +46,7 @@
       in
       {
         packages.default = default;
+        packages.static = pkgs.pkgsStatic.callPackage bin { };
 
         devShells.default = pkgs.mkShell {
           inputsFrom = [ default ];
