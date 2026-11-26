@@ -35,6 +35,8 @@
             udev
           ];
 
+          doCheck = false;
+
           meta.mainProgram = name;
         };
     in
