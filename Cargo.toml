@@ -9,4 +9,4 @@ edition = "2024"
 [dependencies]
 bitvec = "1.1.1"
 serialport = "4.9.0"
-sysinfo = "0.39.6"
+sysinfo = "0.40.4"

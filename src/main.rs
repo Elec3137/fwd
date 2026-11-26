@@ -6,7 +6,10 @@ mod grid;
 mod led;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut sys = sysinfo::System::new();
+    let specifics = RefreshKind::nothing()
+        .with_memory(MemoryRefreshKind::nothing().with_ram())
+        .with_cpu(CpuRefreshKind::nothing().with_usage());
+    let mut sys = sysinfo::System::new_with_specifics(specifics)?;
 
     let mut grid0 = grid::Grid::default();
     let mut grid1 = grid::Grid::default();
@@ -14,16 +17,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let (mut strip0, mut strip1) = led::get_strip_pair()?;
     thread::sleep(led::MIN_INTERVAL);
     loop {
-        sys.refresh_specifics(
-            RefreshKind::nothing()
-                .with_memory(MemoryRefreshKind::nothing().with_ram())
-                .with_cpu(CpuRefreshKind::nothing().with_cpu_usage()),
-        );
+        sys.refresh_specifics(specifics);
         grid0.clear();
         grid1.clear();
 
         for (x, cpu) in sys.cpus().iter().enumerate() {
-            let cpu_usage = (cpu.cpu_usage() as f64 / (100. / led::HEIGHT as f64)).round() as usize;
+            let cpu_usage = (cpu.usage() as f64 / (100. / led::HEIGHT as f64)).round() as usize;
             for y in 0..cpu_usage {
                 if x < led::WIDTH {
                     grid0.set_xy(x, y, true);
