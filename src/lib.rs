@@ -18,8 +18,7 @@ pub fn cpu_display() -> Result<(), Error> {
         .with_cpu(CpuRefreshKind::nothing().with_usage());
     let mut sys = sysinfo::System::new_with_specifics(specifics)?;
 
-    let mut scaffold = scaffold::State::new()?;
-    scaffold.run(|state| {
+    scaffold::State::new()?.run(|state| {
         sys.refresh_specifics(specifics);
         state.grid0.clear();
         state.grid1.clear();
