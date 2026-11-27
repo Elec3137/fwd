@@ -1,3 +1,8 @@
+//! High-level interface to create a led matrix program.
+//!
+//! Initialize with [State::new],
+//! and pass a closure into [State::run].
+
 use std::{io, thread, time::Duration};
 
 use crate::{grid, led};
